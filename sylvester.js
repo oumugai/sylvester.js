@@ -1,5 +1,5 @@
-var functions = ["dim", "rank", "det", "inverse"]
-var functoins_arg = [1, 1, 1, 1 ]
+var functions = ["rank", "det", "inverse","echelon","tr","dim"]
+var functoins_arg = [1, 1, 1, 1, 1, 1]
 
 var calcObject = function(matrix){
     this.elements = matrix;
@@ -10,7 +10,7 @@ function calc(formula){
 	var infix   = split_formula(formula);
 	infix = modify_infix(infix);
 	var postfix = get_postfix(infix);
-	console.log("=>",postfix);
+//	console.log("=>",postfix);
 	var result;
 	for(var num=0;num < postfix.length;num++){
 		if("+-*/^=".indexOf(postfix[num]) != -1){
@@ -529,13 +529,25 @@ var defineFunction = function(func_name,  arg_num){
 	}
 }
 
-
 var dim = function(mat){
-	return -10000;
+	return rank(mat);
 }
 
 var rank = function(mat){
-	return 8888888;
+	var echelon_res = echelon(mat);
+	var max_dim = 0;
+	for(var i = 0;i < echelon_res.length;i++){
+		var sum_dim = 0;
+		for(var j = 0; j < echelon_res[0].length; j++){
+			if(echelon_res[i][j] != 0){
+				sum_dim++;
+			}
+		}
+		if(max_dim < sum_dim){
+			max_dim = sum_dim;
+		}
+	}
+	return max_dim;
 }
 
 var inverse = function(matrix){
@@ -595,6 +607,49 @@ var det = function(matrix){
 		det_num*=mat_esc[i][i];
 	}
 	return(Math.round(det_num*1000000)/1000000);
+}
+
+var echelon = function(matrix){
+	var matrix_esc = matrix[0].clone();
+	var x_len = matrix[0][0].length;
+	var y_len = matrix[0].length;
+	var y_cnt = 0;
+	for(var i = 0;i < x_len;i++){
+		for(var j=y_cnt;j < y_len;j++){
+			if(matrix_esc[j][i] != 0){
+				matrix_esc = rowOpe([matrix_esc], j, y_cnt, 1).clone();
+				for(var k = 0;k < y_len;k++){
+					var buf = matrix_esc[k][i]/matrix_esc[y_cnt][i]
+					if(y_cnt != k){
+						for(var l = 0;l < x_len;l++){
+							matrix_esc[k][l] -= matrix_esc[y_cnt][l] * buf;
+						}
+					}
+				}
+				y_cnt++;
+				break;
+			}
+		}
+	}
+	return matrix_esc.clone();
+}
+
+var tr = function(matrix){
+	var sum = 0;
+	for(var i = 0;i < matrix[0].length;i++){
+		sum+=matrix[0][i][i];
+	}
+	return sum;
+}
+
+var rowOpe = function(matrix, fromNum, forNum, buf){
+	var matrix_esc = matrix[0].clone();
+	var matrix_for_esc = matrix_esc[forNum].clone();
+	for(var i = 0;i < matrix_esc[fromNum].length;i++){
+		matrix_esc[forNum][i] = matrix_esc[fromNum][i]*buf;
+		matrix_esc[fromNum][i] = matrix_for_esc[i];
+	}
+	return matrix_esc.clone();
 }
 
 Array.prototype.clone = function(){
