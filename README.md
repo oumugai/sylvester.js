@@ -38,10 +38,13 @@ calc("test(a)");
 ```
 と書くことになります。<br>
 
-今のところ行列式を求める関数det(matrix)<br>
-変数の方を求める関数judgeType(calcObject)<br>
-転地を求める関数transverse(calcObject)<br>
-逆行列を求める関数inverse(matrix)<br>
+今のところ行列式を求める関数 det(matrix)<br>
+変数の方を求める関数 judgeType(calcObject)<br>
+転置を求める関数 transverse(calcObject)<br>
+逆行列を求める関数 inverse(matrix)<br>
+階段行列を求める関数 echelon(matrix)<br>
+階数を求める関数 rank(matrix)<br>
+トレースを求める関数 tr(matrix)<br>
 
 が用意されています。<br>
 
